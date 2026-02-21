@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Start RAT Client",
+            "request": "launch",
+            "mainClass": "com.cronical.client.Main",
+            "cwd": "${workspaceFolder}",
+            "vmArgs": "--add-opens java.desktop/javax.swing=ALL-UNNAMED --add-opens java.desktop/java.awt=ALL-UNNAMED --add-opens java.desktop/java.awt.image=ALL-UNNAMED"
+        }
+    ]
+}

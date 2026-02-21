@@ -22,7 +22,6 @@ public class MyClient implements Runnable {
 	private String ip = "127.0.0.1";
 	private PacketHandler pHandler;
 	private Kryo kryo;
-	//TODO wirklich notwendig? @serverip
 	private String serverIp;
 	private Thread t;
 	
@@ -30,7 +29,9 @@ public class MyClient implements Runnable {
 
 	/**
 	 * Constructor of MyClient
-	 * @param int tcp, int udp, int timeout 
+	 * @param tcp TCP Port
+	 * @param udp UDP Port
+	 * @param timeout Connection timeout in ms
 	 */
 	public MyClient(int tcp, int udp, int timeout) {
 	
@@ -54,24 +55,27 @@ public class MyClient implements Runnable {
 	public void connect(String serverIp) {
 		this.serverIp = serverIp;		
 		
+		// Add listener and start thread BEFORE connecting to ensure reconnection logic works if initial connect fails
+		client.addListener(new MyClientListener(this));
+		System.out.println("[Client]: Client added MyClientListener (Listen to the Packets from the Server now!)");
+		t = new Thread(this);
+		t.start();
+		System.out.println("[Client]: Thread started MyClient");
+
 		try {
 			//Log.TRACE();
 			client.connect(TIMEOUT, serverIp, TCP_PORT, UDP_PORT); //Kryonet connect method
 			System.out.println("[Client]: Client connected to the Server");
-			client.addListener(new MyClientListener(this));
-			System.out.println("[Client]: Client added MyClientListener (Listen to the Packets from the Server now!)");
-			t = new Thread(this);
-			t.start();
-			System.out.println("[Client]: Thread started MyClient");			
+			
+			SystemName SysName = new SystemName();
+			SysName.systemName = System.getProperty("user.name");
+			System.out.println("[Client]: Send SystemName to the Server --> " +  System.getProperty("user.name"));
+			client.sendTCP(SysName);
 		} 
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		SystemName SysName = new SystemName();
-		SysName.systemName = System.getProperty("user.name");
-		System.out.println("[Client]: Send SystemName to the Server --> " +  System.getProperty("user.name"));
-		client.sendTCP(SysName);	
 	}
 
 	/**
@@ -89,7 +93,7 @@ public class MyClient implements Runnable {
 		while (true) { //Keep the application running		
 			try {
 				Thread.sleep(5000); //Check if connected or not every 10 seconds				
-				if (!client.isConnected())
+				if (!client.isConnected()) {
 					System.out.println("[Client]: Client is not connected to the Server!");
 					Thread.sleep(5000);					
 					if(!client.isConnected()){									
@@ -105,6 +109,7 @@ public class MyClient implements Runnable {
 							e.printStackTrace();
 						}								
 					}
+				}
 			} 
 			catch (InterruptedException e) {
 				//TODO pHandler.checkException(e);

@@ -36,24 +36,30 @@ public class ControlClient extends Thread {
         while(continueLoop){
         	//recieve commands and respond accordingly
             System.out.println("Waiting for command");
+            
+            if (scanner == null) {
+                System.err.println("Scanner is not initialized! Stopping ControlClient loop.");
+                break;
+            }
+
             //int command = scanner.nextInt();
             System.out.println("New command: " + input);
                 
             switch(input){
                     case -1:
-                        robot.mousePress(scanner.nextInt());
+                        if(scanner != null) robot.mousePress(scanner.nextInt());
                     break;
                     case -2:
-                        robot.mouseRelease(scanner.nextInt());
+                        if(scanner != null) robot.mouseRelease(scanner.nextInt());
                     break;
                     case -3:
-                        robot.keyPress(scanner.nextInt());
+                        if(scanner != null) robot.keyPress(scanner.nextInt());
                     break;
                     case -4:
-                        robot.keyRelease(scanner.nextInt());
+                        if(scanner != null) robot.keyRelease(scanner.nextInt());
                     break;
                     case -5:
-                        robot.mouseMove(scanner.nextInt(), scanner.nextInt());
+                        if(scanner != null) robot.mouseMove(scanner.nextInt(), scanner.nextInt());
                     break;
                 }
             }

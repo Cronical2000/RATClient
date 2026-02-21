@@ -1,0 +1,7 @@
+com\cronical\client\network\packet\SystemName.class
+com\cronical\client\network\packet\TaskKillName.class
+com\cronical\client\capture\control\ControlClient.class
+com\cronical\client\network\packet\todo.class
+com\cronical\client\network\packet\Tasks.class
+com\cronical\client\capture\SingletonMessageSendByteArray.class
+com\cronical\client\network\packet\RectangleObject.class

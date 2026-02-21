@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug RAT Client",
+            "request": "launch",
+            "mainClass": "com.cronical.client.Main",
+            "projectName": "RATClient",
+            "cwd": "${workspaceFolder}",
+            "vmArgs": "--add-opens java.desktop/javax.swing=ALL-UNNAMED --add-opens java.desktop/java.awt=ALL-UNNAMED --add-opens java.desktop/java.awt.image=ALL-UNNAMED",
+            "console": "integratedTerminal"
+        }
+    ]
+}

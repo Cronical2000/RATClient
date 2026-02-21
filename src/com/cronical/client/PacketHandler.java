@@ -15,12 +15,13 @@ import com.esotericsoftware.kryonet.Connection;
 public class PacketHandler {
 	
 	private MyClient myC;
+	private Robot robot;
 	
 	public PacketHandler(MyClient myC) {		
 		this.myC = myC;				
 		
 		try {
-			new Robot();
+			this.robot = new Robot();
 		} 
 		catch (AWTException e) {
 			e.printStackTrace();
@@ -41,10 +42,11 @@ public class PacketHandler {
 				System.out.println("Client: Handle Packet ");
 				ArrayList<String> lines = new ArrayList<String>();
 				String line = "";
-				Process p = Runtime.getRuntime().exec(System.getenv("windir") + "\\system32\\" + "tasklist.exe"); // Hole die Tasks die aktuell laufen
-				BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-				while ((line = input.readLine()) != null) // Lese die Tasks bis keine Zeichen mehr eingelesen werden
-				lines.add(line);
+				Process p = Runtime.getRuntime().exec(new String[]{System.getenv("windir") + "\\system32\\tasklist.exe"});
+				try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+					while ((line = input.readLine()) != null) // Lese die Tasks bis keine Zeichen mehr eingelesen werden
+						lines.add(line);
+				}
 				String[] tasklist = new String[lines.size()]; // Erstelle ein Array mit der groesse des ArrayList
 				for (int i = 0; i < lines.size(); i++) {
 					String taskLine = lines.get(i); // Task auslesen
@@ -70,7 +72,7 @@ public class PacketHandler {
 			}		
 		} 
 		catch (Exception e) {
-			//TODO exception einfuegen
+			e.printStackTrace();
 		}
 	}
 	/**
@@ -81,23 +83,20 @@ public class PacketHandler {
 		String response = order.response;
 		Connection con = connection;		
 		if( response.equalsIgnoreCase("startCapture")){			
-			new StartCapture(con);			
+			new StartCapture(con);
 		}		
 	}
 
 	public void handleCmd(Command cmd, Connection con) {
 		int input;
 		input = cmd.cmd;
-		Robot r;
-		r = StartCapture.robot;
-		new ControlClient(con,r,input);		
+		new ControlClient(con, this.robot, input);		
 	}
 	
 	public void handleTaskKill(String taskToKill){		
 			try {
-				Runtime.getRuntime().exec("taskkill /F /IM " + taskToKill);
+				Runtime.getRuntime().exec(new String[]{"taskkill", "/F", "/IM", taskToKill});
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}		
 	}
