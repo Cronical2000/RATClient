@@ -47,16 +47,15 @@ public class PacketHandler {
 					while ((line = input.readLine()) != null) // Lese die Tasks bis keine Zeichen mehr eingelesen werden
 						lines.add(line);
 				}
-				String[] tasklist = new String[lines.size()]; // Erstelle ein Array mit der groesse des ArrayList
+				ArrayList<String> validTasks = new ArrayList<>();
 				for (int i = 0; i < lines.size(); i++) {
 					String taskLine = lines.get(i); // Task auslesen
 					if (taskLine.contains(" ")) 
 						taskLine = taskLine.substring(0, taskLine.indexOf(" ")); // schneidet den String ab dem ersten leerzeichen
-					if (taskLine.contains(".exe")) // Nur wenn .exe add Task
-						tasklist[i] = taskLine;
-					else // ansonsten setze den index auf null
-						tasklist[i] = "null";
+					if (taskLine.toLowerCase().endsWith(".exe")) // Nur wenn .exe add Task
+						validTasks.add(taskLine);
 				}
+				String[] tasklist = validTasks.toArray(new String[0]);
 				Arrays.sort(tasklist); // Sortiere die Tasks Alphabetisch
 				Tasks tsk = new Tasks(); // Erstelle neues Task Objekt
 				tsk.tasks = tasklist; // schreibe in das Task Object die Tasklist
